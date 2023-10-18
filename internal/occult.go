@@ -18,6 +18,11 @@ import (
 	"go.uber.org/multierr"
 )
 
+// define own type as key for context values (SA1029)
+type ctxKeys int
+
+const keyProfile ctxKeys = iota
+
 // Vault describes all the operations needed to receive the secret data
 type Vault interface {
 	ReadKv2(ctx context.Context, path string) (map[string]any, error)
@@ -49,7 +54,7 @@ func (o *Occult) Run(ctx context.Context, conf config.OccultConfig, wg *sync.Wai
 	var errs error
 	for _, req := range conf.UnlockRequests {
 		func() {
-			ctx, cancel := context.WithTimeout(context.WithValue(ctx, "profile", req.Profile), time.Minute*1)
+			ctx, cancel := context.WithTimeout(context.WithValue(ctx, keyProfile, req.Profile), time.Minute*1)
 			defer cancel()
 
 			if err := o.performUnlockRequest(ctx, req); err != nil {
@@ -161,7 +166,7 @@ func runPosthooks(ctx context.Context, cmds []string, stopOnError bool) error {
 		cmdWithArgs := strings.Split(c, " ")
 		log.Info().Msgf("Running post pook command %v", cmdWithArgs)
 		cmd := exec.CommandContext(ctx, cmdWithArgs[0], cmdWithArgs[1:]...) // #nosec: G204
-		profile := safeCtxValue(ctx, "profile", "UNKNOWN")
+		profile := safeCtxValue(ctx, "UNKNOWN")
 		if err := cmd.Run(); err != nil {
 			metrics.PostHookSuccess.WithLabelValues(profile, cmdWithArgs[0]).Set(0)
 			errs = multierr.Append(errs, err)
@@ -181,8 +186,8 @@ func isBase64Encoded(input string) bool {
 	return err == nil
 }
 
-func safeCtxValue(ctx context.Context, key, def string) string {
-	val := ctx.Value(key)
+func safeCtxValue(ctx context.Context, def string) string {
+	val := ctx.Value(keyProfile)
 	if val == nil {
 		return def
 	}
