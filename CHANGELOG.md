@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.0.1](https://github.com/soerenschneider/occult/compare/v2.0.0...v2.0.1) (2024-03-21)
+
+
+### Bug Fixes
+
+* **deps:** bump github.com/go-jose/go-jose/v3 from 3.0.0 to 3.0.1 ([931bbf4](https://github.com/soerenschneider/occult/commit/931bbf4487d4b56fd0578ddda00e085e3d7afe65))
+* **deps:** bump github.com/go-jose/go-jose/v3 from 3.0.1 to 3.0.3 ([6afc00b](https://github.com/soerenschneider/occult/commit/6afc00b9efe8da361845ece2f28646c43f62d9f7))
+* **deps:** bump github.com/go-playground/validator/v10 ([ef54ca0](https://github.com/soerenschneider/occult/commit/ef54ca05f09a71be18e0d9b601f62d2544bdb7c8))
+* **deps:** bump github.com/hashicorp/vault/api from 1.10.0 to 1.12.0 ([ebadc8b](https://github.com/soerenschneider/occult/commit/ebadc8bf916bae34697c3c77ad1808a4e4ed7c40))
+* **deps:** bump github.com/hashicorp/vault/api from 1.12.0 to 1.12.2 ([4ef9ced](https://github.com/soerenschneider/occult/commit/4ef9ced55b5cb514c4478ba846a853290c25660d))
+* **deps:** bump github.com/prometheus/common from 0.45.0 to 0.51.0 ([54bf263](https://github.com/soerenschneider/occult/commit/54bf263990ae0850743e24327246c1877866bd6d))
+* **deps:** bump github.com/rs/zerolog from 1.31.0 to 1.32.0 ([8d74180](https://github.com/soerenschneider/occult/commit/8d74180f24c760d53e0823d5153d33cf7dd11996))
+* **deps:** bump golang.org/x/crypto from 0.14.0 to 0.17.0 ([4291730](https://github.com/soerenschneider/occult/commit/4291730393af3d8870eecbf82fcad6bbdfda3ffd))
+* **deps:** bump golang.org/x/net from 0.17.0 to 0.22.0 ([6c2ba18](https://github.com/soerenschneider/occult/commit/6c2ba18381096d7529f9dc579236842739e54a81))
+* **deps:** bump golang.org/x/term from 0.15.0 to 0.18.0 ([0229a26](https://github.com/soerenschneider/occult/commit/0229a2657d296a11ab76b6ce1ca5358fd00a0dd4))
+* **deps:** bump google.golang.org/protobuf from 1.31.0 to 1.33.0 ([d0a79f2](https://github.com/soerenschneider/occult/commit/d0a79f2574377b07c93a527fe3cbb57943780cb9))
+* fix compilation error with prometheus lib updates ([60b757a](https://github.com/soerenschneider/occult/commit/60b757ad21950483caacba8fd136a17c98cb714b))
+
 ## [2.0.0](https://github.com/soerenschneider/occult/compare/v1.0.0...v2.0.0) (2023-11-07)
 
 
