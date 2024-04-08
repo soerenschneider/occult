@@ -8,7 +8,7 @@ require (
 	github.com/go-playground/validator/v10 v10.19.0
 	github.com/hashicorp/vault/api v1.12.2
 	github.com/prometheus/client_golang v1.19.0
-	github.com/prometheus/common v0.51.0
+	github.com/prometheus/common v0.52.2
 	github.com/rs/zerolog v1.32.0
 	go.uber.org/multierr v1.11.0
 	golang.org/x/net v0.22.0
