@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.0.2](https://github.com/soerenschneider/occult/compare/v2.0.1...v2.0.2) (2024-06-03)
+
+
+### Bug Fixes
+
+* **deps:** bump github.com/go-playground/validator/v10 ([15cfe2a](https://github.com/soerenschneider/occult/commit/15cfe2a5c3b219158fffd17aa2769f4d94796743))
+* **deps:** bump github.com/hashicorp/vault/api from 1.12.2 to 1.14.0 ([f5d58c8](https://github.com/soerenschneider/occult/commit/f5d58c83667a806a03bb4fe1bb9606e78e29c563))
+* **deps:** bump github.com/prometheus/common from 0.51.0 to 0.54.0 ([62a66a2](https://github.com/soerenschneider/occult/commit/62a66a2145a1797f3257f502d8b6a2d9901fe16d))
+
 ## [2.0.1](https://github.com/soerenschneider/occult/compare/v2.0.0...v2.0.1) (2024-03-21)
 
 
