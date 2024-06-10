@@ -7,7 +7,7 @@ toolchain go1.22.1
 require (
 	github.com/go-playground/validator/v10 v10.21.0
 	github.com/hashicorp/vault/api v1.14.0
-	github.com/prometheus/client_golang v1.19.0
+	github.com/prometheus/client_golang v1.19.1
 	github.com/prometheus/common v0.54.0
 	github.com/rs/zerolog v1.32.0
 	go.uber.org/multierr v1.11.0
