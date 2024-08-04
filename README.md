@@ -1,4 +1,9 @@
-# Occult
+# occult
+[![Go Report Card](https://goreportcard.com/badge/github.com/soerenschneider/occult)](https://goreportcard.com/report/github.com/soerenschneider/occult)
+![test-workflow](https://github.com/soerenschneider/occult/actions/workflows/test.yaml/badge.svg)
+![release-workflow](https://github.com/soerenschneider/occult/actions/workflows/release.yaml/badge.svg)
+![golangci-lint-workflow](https://github.com/soerenschneider/occult/actions/workflows/golangci-lint.yaml/badge.svg)
+
 Generic process automation based on reading secrets from Vault and piping them to other tools
 
 ## Features
