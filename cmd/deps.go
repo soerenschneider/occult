@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/hashicorp/vault/api"
+	"github.com/hashicorp/vault/api/auth/approle"
 	"github.com/rs/zerolog/log"
 	"github.com/soerenschneider/occult/v2/internal"
 	"github.com/soerenschneider/occult/v2/internal/config"
@@ -10,7 +11,7 @@ import (
 )
 
 type dependencies struct {
-	vaultAuth vault.VaultAuth
+	vaultAuth api.AuthMethod
 	vault     internal.Vault
 
 	occult *internal.Occult
@@ -40,9 +41,14 @@ func (d *dependencies) buildVaultAuth(conf config.OccultConfig) error {
 	var err error
 	switch conf.VaultAuth.Type {
 	case config.VaultAuthApprole:
-		d.vaultAuth, err = auth.NewAppRoleAuth(conf.VaultAuth)
-	case config.VaultAuthToken:
-		d.vaultAuth, err = auth.NewTokenAuth(conf.VaultAuth.Token)
+		secretId := &approle.SecretID{
+			FromFile:   conf.VaultAuth.ApproleSecretFile,
+			FromString: conf.VaultAuth.ApproleSecret,
+		}
+		opts := []approle.LoginOption{
+			approle.WithMountPath(conf.VaultAuth.ApproleMount),
+		}
+		d.vaultAuth, err = approle.NewAppRoleAuth(conf.VaultAuth.ApproleRoleId, secretId, opts...)
 	default:
 		d.vaultAuth = auth.NewTokenImplicitAuth()
 	}

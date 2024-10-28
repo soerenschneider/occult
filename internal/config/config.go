@@ -89,10 +89,7 @@ type VaultConfig struct {
 	Address string `yaml:"address" validate:"required"`
 
 	// Type describes what type of authentication against Vault is used.
-	Type string `yaml:"auth_type" validate:"omitempty,oneof=token approle implicit"`
-
-	// Token specifies the token use as authentication.
-	Token string `yaml:"token" validate:"required_if=Type token TokenFile ''"`
+	Type string `yaml:"auth_type" validate:"omitempty,oneof=approle implicit"`
 
 	// TokenFile describes the file that contains the Vault token.
 	TokenFile string `yaml:"token_file" validate:"required_if=Type token Token '',omitempty,file"`

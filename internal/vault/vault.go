@@ -16,20 +16,15 @@ const (
 
 type Client struct {
 	client *api.Client
-	auth   VaultAuth
+	auth   api.AuthMethod
 
 	transitPath string
 	kv2Path     string
 }
 
-type VaultAuth interface {
-	Login(ctx context.Context, client *api.Client) (*api.Secret, error)
-	Cleanup(_ context.Context, client *api.Client) error
-}
-
 type VaultOpt func(v *Client) error
 
-func New(client *api.Client, auth VaultAuth, opts ...VaultOpt) (*Client, error) {
+func New(client *api.Client, auth api.AuthMethod, opts ...VaultOpt) (*Client, error) {
 	if client == nil {
 		return nil, errors.New("empty client")
 	}
@@ -68,7 +63,7 @@ func (v *Client) ReadKv2(ctx context.Context, path string) (map[string]any, erro
 		return nil, ErrAuthFailed
 	}
 	defer func() {
-		_ = v.auth.Cleanup(ctx, v.client)
+		_ = v.client.Auth().Token().RevokeSelf("xxx")
 	}()
 
 	secret, err := v.client.KVv2(v.kv2Path).Get(ctx, path)
@@ -85,7 +80,7 @@ func (v *Client) ReadTransitSecret(ctx context.Context, path, ciphertext string)
 		return nil, ErrAuthFailed
 	}
 	defer func() {
-		_ = v.auth.Cleanup(ctx, v.client)
+		_ = v.client.Auth().Token().RevokeSelf("xxx")
 	}()
 
 	decryptData := map[string]any{
