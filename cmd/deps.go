@@ -1,6 +1,10 @@
 package main
 
 import (
+	"os/user"
+	"path/filepath"
+	"strings"
+
 	"github.com/hashicorp/vault/api"
 	"github.com/hashicorp/vault/api/auth/approle"
 	"github.com/rs/zerolog/log"
@@ -42,7 +46,7 @@ func (d *dependencies) buildVaultAuth(conf config.OccultConfig) error {
 	switch conf.VaultAuth.Type {
 	case config.VaultAuthApprole:
 		secretId := &approle.SecretID{
-			FromFile:   conf.VaultAuth.ApproleSecretFile,
+			FromFile:   expandPath(conf.VaultAuth.ApproleSecretFile),
 			FromString: conf.VaultAuth.ApproleSecret,
 		}
 		opts := []approle.LoginOption{
@@ -76,4 +80,25 @@ func getVaultApiClient(conf config.VaultConfig) (*api.Client, error) {
 	}
 
 	return client, nil
+}
+
+func expandPath(path string) string {
+	if !strings.Contains(path, "~") {
+		return path
+	}
+
+	usr, err := user.Current()
+	if err != nil {
+		return path
+	}
+
+	dir := usr.HomeDir
+
+	if path == "~" {
+		return dir
+	} else if strings.HasPrefix(path, "~/") {
+		return filepath.Join(dir, path[2:])
+	}
+
+	return path
 }
