@@ -58,7 +58,7 @@ var (
 )
 
 func (v *Client) ReadKv2(ctx context.Context, path string) (map[string]any, error) {
-	_, err := v.client.Auth().Login(context.Background(), v.auth)
+	_, err := v.client.Auth().Login(ctx, v.auth)
 	if err != nil {
 		return nil, ErrAuthFailed
 	}
@@ -75,7 +75,7 @@ func (v *Client) ReadKv2(ctx context.Context, path string) (map[string]any, erro
 }
 
 func (v *Client) ReadTransitSecret(ctx context.Context, path, ciphertext string) (map[string]any, error) {
-	_, err := v.client.Auth().Login(context.Background(), v.auth)
+	_, err := v.client.Auth().Login(ctx, v.auth)
 	if err != nil {
 		return nil, ErrAuthFailed
 	}
