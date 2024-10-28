@@ -1,12 +1,12 @@
 package precondition
 
 import (
+	"context"
 	"os/exec"
 	"strings"
 
 	"github.com/rs/zerolog/log"
 	"github.com/soerenschneider/occult/v2/internal/config"
-	"golang.org/x/net/context"
 )
 
 const defaultExitCode = 0
