@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.1.0](https://github.com/soerenschneider/occult/compare/v2.0.1...v2.1.0) (2024-10-28)
+
+
+### Features
+
+* expand path of secret id file ([c2c0da1](https://github.com/soerenschneider/occult/commit/c2c0da1e8caa4b346c461d4a7703170cc6ea48c4))
+
+
+### Bug Fixes
+
+* **deps:** bump github.com/go-playground/validator/v10 ([9068295](https://github.com/soerenschneider/occult/commit/9068295708c4f213849851116ba6361461d19774))
+* **deps:** bump github.com/go-playground/validator/v10 ([15cfe2a](https://github.com/soerenschneider/occult/commit/15cfe2a5c3b219158fffd17aa2769f4d94796743))
+* **deps:** bump github.com/hashicorp/vault/api from 1.12.2 to 1.14.0 ([f5d58c8](https://github.com/soerenschneider/occult/commit/f5d58c83667a806a03bb4fe1bb9606e78e29c563))
+* **deps:** bump github.com/prometheus/client_golang ([f4adfb8](https://github.com/soerenschneider/occult/commit/f4adfb81832b5bbc816083b1b9fc211e06fee2e7))
+* **deps:** bump github.com/prometheus/common from 0.51.0 to 0.54.0 ([62a66a2](https://github.com/soerenschneider/occult/commit/62a66a2145a1797f3257f502d8b6a2d9901fe16d))
+* **deps:** bump github.com/rs/zerolog from 1.32.0 to 1.33.0 ([4cce29f](https://github.com/soerenschneider/occult/commit/4cce29f30a27310b2017c09b448bf7d6b2d82930))
+* **deps:** bump golang.org/x/net from 0.25.0 to 0.30.0 ([f36bd62](https://github.com/soerenschneider/occult/commit/f36bd62f3c7a7fb55ec967dd1516518812204773))
+* **deps:** bump golang.org/x/term from 0.20.0 to 0.25.0 ([4ec8853](https://github.com/soerenschneider/occult/commit/4ec8853397146f83f115766eeedc1a833b55e096))
+* use correct context ([0f3a573](https://github.com/soerenschneider/occult/commit/0f3a57332a7957ed4f7254e4cac8348754eabb54))
+
 ## [2.0.1](https://github.com/soerenschneider/occult/compare/v2.0.0...v2.0.1) (2024-03-21)
 
 
