@@ -9,7 +9,7 @@ require (
 	github.com/hashicorp/vault/api v1.15.0
 	github.com/hashicorp/vault/api/auth/approle v0.8.0
 	github.com/prometheus/client_golang v1.20.5
-	github.com/prometheus/common v0.55.0
+	github.com/prometheus/common v0.60.1
 	github.com/rs/zerolog v1.33.0
 	go.uber.org/multierr v1.11.0
 	golang.org/x/net v0.30.0
