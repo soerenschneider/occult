@@ -9,10 +9,10 @@ require (
 	github.com/hashicorp/vault/api v1.15.0
 	github.com/hashicorp/vault/api/auth/approle v0.8.0
 	github.com/prometheus/client_golang v1.20.5
-	github.com/prometheus/common v0.55.0
+	github.com/prometheus/common v0.61.0
 	github.com/rs/zerolog v1.33.0
 	go.uber.org/multierr v1.11.0
-	golang.org/x/net v0.30.0
+	golang.org/x/net v0.32.0
 	golang.org/x/term v0.28.0
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -48,5 +48,5 @@ require (
 	golang.org/x/sys v0.29.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/time v0.0.0-20200416051211-89c76fbcd5d1 // indirect
-	google.golang.org/protobuf v1.34.2 // indirect
+	google.golang.org/protobuf v1.35.2 // indirect
 )
