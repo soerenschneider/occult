@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.1.1](https://github.com/soerenschneider/occult/compare/v2.1.0...v2.1.1) (2025-08-11)
+
+
+### Bug Fixes
+
+* **deps:** bump github.com/go-playground/validator/v10 ([013800f](https://github.com/soerenschneider/occult/commit/013800f62518974e998421480036ce43394dac2f))
+* **deps:** bump github.com/prometheus/common from 0.55.0 to 0.61.0 ([bface26](https://github.com/soerenschneider/occult/commit/bface269d25616dcde04e394f914e0497e336b67))
+* **deps:** bump golang.org/x/crypto from 0.28.0 to 0.31.0 ([bf9d789](https://github.com/soerenschneider/occult/commit/bf9d789388764c720cf18a04842dd2e2d71fd808))
+* **deps:** bump golang.org/x/net from 0.30.0 to 0.34.0 ([242fe4a](https://github.com/soerenschneider/occult/commit/242fe4add98c827bce324f95b4942ffd5d5b0f9b))
+* **deps:** bump golang.org/x/term from 0.25.0 to 0.28.0 ([01863b5](https://github.com/soerenschneider/occult/commit/01863b57c7ab6f836791326e772dcd4dd1773438))
+
 ## [2.1.0](https://github.com/soerenschneider/occult/compare/v2.0.1...v2.1.0) (2024-10-28)
 
 
