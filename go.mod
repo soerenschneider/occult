@@ -1,8 +1,8 @@
 module github.com/soerenschneider/occult/v2
 
-go 1.21
+go 1.23.0
 
-toolchain go1.22.1
+toolchain go1.24.4
 
 require (
 	github.com/go-playground/validator/v10 v10.23.0
@@ -13,7 +13,7 @@ require (
 	github.com/rs/zerolog v1.33.0
 	go.uber.org/multierr v1.11.0
 	golang.org/x/net v0.34.0
-	golang.org/x/term v0.28.0
+	golang.org/x/term v0.34.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -45,7 +45,7 @@ require (
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/ryanuber/go-glob v1.0.0 // indirect
 	golang.org/x/crypto v0.32.0 // indirect
-	golang.org/x/sys v0.29.0 // indirect
+	golang.org/x/sys v0.35.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/time v0.0.0-20200416051211-89c76fbcd5d1 // indirect
 	google.golang.org/protobuf v1.35.2 // indirect
