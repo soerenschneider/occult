@@ -1,8 +1,6 @@
 module github.com/soerenschneider/occult/v2
 
-go 1.21
-
-toolchain go1.22.1
+go 1.23
 
 require (
 	github.com/go-playground/validator/v10 v10.23.0
@@ -10,7 +8,7 @@ require (
 	github.com/hashicorp/vault/api/auth/approle v0.8.0
 	github.com/prometheus/client_golang v1.20.5
 	github.com/prometheus/common v0.61.0
-	github.com/rs/zerolog v1.33.0
+	github.com/rs/zerolog v1.35.1
 	go.uber.org/multierr v1.11.0
 	golang.org/x/net v0.34.0
 	golang.org/x/term v0.28.0
@@ -36,7 +34,7 @@ require (
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
-	github.com/mattn/go-colorable v0.1.13 // indirect
+	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
