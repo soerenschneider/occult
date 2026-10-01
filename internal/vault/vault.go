@@ -2,7 +2,9 @@ package vault
 
 import (
 	"context"
+	"encoding/base64"
 	"errors"
+	"fmt"
 	"net/url"
 
 	"github.com/hashicorp/vault/api"
@@ -10,17 +12,9 @@ import (
 	"go.uber.org/multierr"
 )
 
-const (
-	defaultTransitPath = "transit"
-	defaultKv2Path     = "secret"
-)
-
 type Client struct {
 	client *api.Client
 	auth   api.AuthMethod
-
-	transitPath string
-	kv2Path     string
 
 	// revokeToken controls whether the token is revoked after each request. Only enable it for auth methods that
 	// issue a new token on login, otherwise the user's own token gets revoked.
@@ -38,10 +32,8 @@ func New(client *api.Client, auth api.AuthMethod, opts ...VaultOpt) (*Client, er
 	}
 
 	c := &Client{
-		client:      client,
-		auth:        auth,
-		kv2Path:     defaultKv2Path,
-		transitPath: defaultTransitPath,
+		client: client,
+		auth:   auth,
 	}
 
 	var errs error
@@ -71,14 +63,15 @@ func (v *Client) revokeTokenIfNeeded(ctx context.Context) {
 	}
 }
 
-func (v *Client) ReadKv2(ctx context.Context, path string) (map[string]any, error) {
+// ReadKv2 reads the secret at the given path from the KV2 secret engine mounted at mount.
+func (v *Client) ReadKv2(ctx context.Context, mount, path string) (map[string]any, error) {
 	_, err := v.client.Auth().Login(ctx, v.auth)
 	if err != nil {
 		return nil, ErrAuthFailed
 	}
 	defer v.revokeTokenIfNeeded(ctx)
 
-	secret, err := v.client.KVv2(v.kv2Path).Get(ctx, path)
+	secret, err := v.client.KVv2(mount).Get(ctx, path)
 	if err != nil {
 		return nil, err
 	}
@@ -86,10 +79,16 @@ func (v *Client) ReadKv2(ctx context.Context, path string) (map[string]any, erro
 	return secret.Data, nil
 }
 
-func (v *Client) ReadTransitSecret(ctx context.Context, path, ciphertext string) (map[string]any, error) {
+// ReadTransitSecret decrypts the ciphertext using the transit key with the given name from the transit secret engine
+// mounted at mount.
+func (v *Client) ReadTransitSecret(ctx context.Context, mount, key, ciphertext string) (string, error) {
+	if key == "" {
+		return "", errors.New("empty transit key")
+	}
+
 	_, err := v.client.Auth().Login(ctx, v.auth)
 	if err != nil {
-		return nil, ErrAuthFailed
+		return "", ErrAuthFailed
 	}
 	defer v.revokeTokenIfNeeded(ctx)
 
@@ -97,15 +96,28 @@ func (v *Client) ReadTransitSecret(ctx context.Context, path, ciphertext string)
 		"ciphertext": ciphertext,
 	}
 
-	path, err = url.JoinPath(v.transitPath, "decrypt", path)
+	path, err := url.JoinPath(mount, "decrypt", key)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	response, err := v.client.Logical().WriteWithContext(ctx, path, decryptData)
 	if err != nil {
-		return nil, ErrDecryptFailed
+		return "", fmt.Errorf("%w: %w", ErrDecryptFailed, err)
+	}
+	if response == nil || response.Data == nil {
+		return "", ErrEmptySecrte
 	}
 
-	return response.Data, nil
+	// transit returns the plaintext base64-encoded
+	encoded, ok := response.Data["plaintext"].(string)
+	if !ok {
+		return "", fmt.Errorf("%w: no plaintext in response", ErrInvalidData)
+	}
+	plaintext, err := base64.StdEncoding.DecodeString(encoded)
+	if err != nil {
+		return "", fmt.Errorf("%w: could not decode plaintext: %w", ErrInvalidData, err)
+	}
+
+	return string(plaintext), nil
 }

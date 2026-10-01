@@ -15,6 +15,8 @@ const (
 	VaultAuthToken    = "token"
 
 	DefaultApproleMount = "approle"
+	DefaultTransitMount = "transit"
+	DefaultKv2Mount     = "secret"
 )
 
 func Read(path string) (*OccultConfig, error) {
@@ -41,18 +43,28 @@ type UnlockConfig struct {
 	// Profile denotes a nice name for this unlocker
 	Profile string `yaml:"profile" validate:"required"`
 
-	// SecretPath describes the relative path in Vault to retrieve the secret
-	SecretPath string `yaml:"secret_path" validate:"required"`
+	// SecretPath describes the relative path in Vault to retrieve the secret. For secret type transit, it is used as
+	// the key name if TransitKey is not set.
+	SecretPath string `yaml:"secret_path" validate:"required_if=SecretType kv2"`
 
 	// SecretType can either be kv2 or transit and instructs whether to decrypt it using the transit secret engine or
 	// read it from KV2.
 	SecretType string `yaml:"secret_type" validate:"omitempty,oneof=kv2 transit"`
 
-	// Accessor describes the key of the read secret to extract the secret value from.
-	Accessor string `yaml:"accessor_path" validate:"required"`
+	// Kv2Mount is the mount path of the KV2 secret engine.
+	Kv2Mount string `yaml:"kv2_mount" validate:"required_if=SecretType kv2"`
+
+	// Accessor describes the key of the read secret to extract the secret value from. Only used for secret type kv2.
+	Accessor string `yaml:"accessor_path" validate:"required_if=SecretType kv2"`
 
 	// CipherTextData contains the encrypted data that can be decrypted using the transit secret engine.
 	CipherTextData string `yaml:"cipher_text" validate:"required_if=SecretType transit"`
+
+	// TransitMount is the mount path of the transit secret engine.
+	TransitMount string `yaml:"transit_mount" validate:"required_if=SecretType transit"`
+
+	// TransitKey is the name of the transit key used to decrypt the ciphertext.
+	TransitKey string `yaml:"transit_key" validate:"required_if=SecretType"`
 
 	// Command instructs occult how to actually unlock something.
 	Command string `yaml:"command" validate:"required"`
@@ -72,6 +84,8 @@ func (c *UnlockConfig) UnmarshalYAML(node *yaml.Node) error {
 
 	tmp := &alias{
 		SecretType:           Kv2SecretType,
+		Kv2Mount:             DefaultKv2Mount,
+		TransitMount:         DefaultTransitMount,
 		PostHooksStopOnError: true,
 	}
 

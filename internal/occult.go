@@ -3,7 +3,6 @@ package internal
 import (
 	"bytes"
 	"context"
-	"encoding/base64"
 	"errors"
 	"fmt"
 	"os/exec"
@@ -25,8 +24,8 @@ const keyProfile ctxKeys = iota
 
 // Vault describes all the operations needed to receive the secret data
 type Vault interface {
-	ReadKv2(ctx context.Context, path string) (map[string]any, error)
-	ReadTransitSecret(ctx context.Context, path string, ciphertext string) (map[string]any, error)
+	ReadKv2(ctx context.Context, mount, path string) (map[string]any, error)
+	ReadTransitSecret(ctx context.Context, mount, key, ciphertext string) (string, error)
 }
 
 type Precondition interface {
@@ -100,22 +99,12 @@ func buildPreconditionImpl(conf *config.PreconditionConfigContainer) (Preconditi
 }
 
 func (o *Occult) unlock(ctx context.Context, conf config.UnlockConfig) error {
-	secret, err := o.readSecret(ctx, conf)
+	payload, err := o.readSecret(ctx, conf)
 	if err != nil {
 		return err
 	}
 
-	payload, ok := secret[conf.Accessor]
-	if !ok {
-		return fmt.Errorf("%q not found in secret data", conf.Accessor)
-	}
-
-	payloadStr, ok := payload.(string)
-	if !ok {
-		return errors.New("can not convert secret to string")
-	}
-
-	if err := runUnlockCommand(ctx, conf.Command, payloadStr); err != nil {
+	if err := runUnlockCommand(ctx, conf.Command, payload); err != nil {
 		return err
 	}
 
@@ -127,20 +116,29 @@ func (o *Occult) unlock(ctx context.Context, conf config.UnlockConfig) error {
 	return nil
 }
 
-func (o *Occult) readSecret(ctx context.Context, conf config.UnlockConfig) (map[string]any, error) {
+func (o *Occult) readSecret(ctx context.Context, conf config.UnlockConfig) (string, error) {
 	switch conf.SecretType {
 	case config.Kv2SecretType:
-		return o.vault.ReadKv2(ctx, conf.SecretPath)
-	case config.TransitSecretType:
-		var ciphertext = conf.CipherTextData
-		if !isBase64Encoded(ciphertext) {
-			ciphertext = base64.StdEncoding.EncodeToString([]byte(ciphertext))
+		secret, err := o.vault.ReadKv2(ctx, conf.Kv2Mount, conf.SecretPath)
+		if err != nil {
+			return "", err
 		}
 
-		return o.vault.ReadTransitSecret(ctx, conf.SecretPath, ciphertext)
+		payload, ok := secret[conf.Accessor]
+		if !ok {
+			return "", fmt.Errorf("%q not found in secret data", conf.Accessor)
+		}
+
+		payloadStr, ok := payload.(string)
+		if !ok {
+			return "", errors.New("can not convert secret to string")
+		}
+		return payloadStr, nil
+	case config.TransitSecretType:
+		return o.vault.ReadTransitSecret(ctx, conf.TransitMount, conf.TransitKey, conf.CipherTextData)
 	}
 
-	return nil, errors.New("unknown implementation")
+	return "", errors.New("unknown implementation")
 }
 
 func runUnlockCommand(ctx context.Context, c string, payload string) error {
@@ -179,11 +177,6 @@ func runPosthooks(ctx context.Context, cmds []string, stopOnError bool) error {
 	}
 
 	return errs
-}
-
-func isBase64Encoded(input string) bool {
-	_, err := base64.StdEncoding.DecodeString(input)
-	return err == nil
 }
 
 func safeCtxValue(ctx context.Context, def string) string {
