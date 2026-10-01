@@ -6,6 +6,7 @@ import (
 	"net/url"
 
 	"github.com/hashicorp/vault/api"
+	"github.com/rs/zerolog/log"
 	"go.uber.org/multierr"
 )
 
@@ -20,6 +21,10 @@ type Client struct {
 
 	transitPath string
 	kv2Path     string
+
+	// revokeToken controls whether the token is revoked after each request. Only enable it for auth methods that
+	// issue a new token on login, otherwise the user's own token gets revoked.
+	revokeToken bool
 }
 
 type VaultOpt func(v *Client) error
@@ -57,14 +62,21 @@ var (
 	ErrDecryptFailed = errors.New("decrypt failed")
 )
 
+func (v *Client) revokeTokenIfNeeded(ctx context.Context) {
+	if !v.revokeToken {
+		return
+	}
+	if err := v.client.Auth().Token().RevokeSelfWithContext(ctx, ""); err != nil {
+		log.Warn().Err(err).Msg("could not revoke token")
+	}
+}
+
 func (v *Client) ReadKv2(ctx context.Context, path string) (map[string]any, error) {
 	_, err := v.client.Auth().Login(ctx, v.auth)
 	if err != nil {
 		return nil, ErrAuthFailed
 	}
-	defer func() {
-		_ = v.client.Auth().Token().RevokeSelf("xxx")
-	}()
+	defer v.revokeTokenIfNeeded(ctx)
 
 	secret, err := v.client.KVv2(v.kv2Path).Get(ctx, path)
 	if err != nil {
@@ -79,9 +91,7 @@ func (v *Client) ReadTransitSecret(ctx context.Context, path, ciphertext string)
 	if err != nil {
 		return nil, ErrAuthFailed
 	}
-	defer func() {
-		_ = v.client.Auth().Token().RevokeSelf("xxx")
-	}()
+	defer v.revokeTokenIfNeeded(ctx)
 
 	decryptData := map[string]any{
 		"ciphertext": ciphertext,

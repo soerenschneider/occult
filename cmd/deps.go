@@ -65,7 +65,13 @@ func (d *dependencies) buildVaultClient(conf config.OccultConfig) error {
 		return err
 	}
 
-	d.vault, err = vault.New(client, d.vaultAuth)
+	var opts []vault.VaultOpt
+	if conf.VaultAuth.Type == config.VaultAuthApprole {
+		// approle issues a new token on every login, the implicit token must not be revoked
+		opts = append(opts, vault.WithRevokeToken())
+	}
+
+	d.vault, err = vault.New(client, d.vaultAuth, opts...)
 	return err
 }
 
