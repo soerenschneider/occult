@@ -1,5 +1,37 @@
 # Changelog
 
+## [2.2.0](https://github.com/soerenschneider/occult/compare/v2.1.0...v2.2.0) (2026-10-02)
+
+
+### Features
+
+* configurable mounts per unlocker and proper transit decryption ([4b6e425](https://github.com/soerenschneider/occult/commit/4b6e425df828cceee15067835deb0708eec1aa72))
+* **config:** validate ciphertext ([237009b](https://github.com/soerenschneider/occult/commit/237009b305fb7429c2308546ad868987625002b1))
+* **metrics:** add metric and use full cmd in hook label ([5197f8d](https://github.com/soerenschneider/occult/commit/5197f8db85b6ae73902919e0e179de91273538b9))
+
+
+### Bug Fixes
+
+* **config:** change validation and update doc ([fa5a358](https://github.com/soerenschneider/occult/commit/fa5a358c32e2a4e04bf0dd76ea90d81eb5020c48))
+* **config:** fix validation of transit key ([4e0ff4a](https://github.com/soerenschneider/occult/commit/4e0ff4a63116a892d13c63d5bcc522d442cb5565))
+* **deps:** bump dependencies ([556c30d](https://github.com/soerenschneider/occult/commit/556c30d78549e9b7adbb9d3a9a93ee6b60654552))
+* **deps:** bump github.com/go-playground/validator/v10 ([013800f](https://github.com/soerenschneider/occult/commit/013800f62518974e998421480036ce43394dac2f))
+* **deps:** bump github.com/go-playground/validator/v10 from 10.22.1 to 10.23.0 ([b0ceaa3](https://github.com/soerenschneider/occult/commit/b0ceaa38263ff274f8e8e88ca3f3acdd8d1c75cf))
+* **deps:** bump github.com/prometheus/common from 0.55.0 to 0.61.0 ([1cce71b](https://github.com/soerenschneider/occult/commit/1cce71bf855773d2f5504263e4d793ad91b5304e))
+* **deps:** bump github.com/prometheus/common from 0.55.0 to 0.61.0 ([bface26](https://github.com/soerenschneider/occult/commit/bface269d25616dcde04e394f914e0497e336b67))
+* **deps:** bump golang.org/x/crypto from 0.28.0 to 0.31.0 ([5ef70a5](https://github.com/soerenschneider/occult/commit/5ef70a5ae7ae5cfce636fe98e0ea5ef3ee153e64))
+* **deps:** bump golang.org/x/crypto from 0.28.0 to 0.31.0 ([bf9d789](https://github.com/soerenschneider/occult/commit/bf9d789388764c720cf18a04842dd2e2d71fd808))
+* **deps:** bump golang.org/x/net from 0.30.0 to 0.34.0 ([c72133b](https://github.com/soerenschneider/occult/commit/c72133b6ecc1b70293959c2213a5c1e21bb8e250))
+* **deps:** bump golang.org/x/net from 0.30.0 to 0.34.0 ([242fe4a](https://github.com/soerenschneider/occult/commit/242fe4add98c827bce324f95b4942ffd5d5b0f9b))
+* **deps:** bump golang.org/x/term from 0.25.0 to 0.28.0 ([91c4e33](https://github.com/soerenschneider/occult/commit/91c4e33b784fc762fe850bfe21246b1ed2d56885))
+* **deps:** bump golang.org/x/term from 0.25.0 to 0.28.0 ([01863b5](https://github.com/soerenschneider/occult/commit/01863b57c7ab6f836791326e772dcd4dd1773438))
+* **deps:** bump procfs to v0.22.0 ([39322f6](https://github.com/soerenschneider/occult/commit/39322f68950921e552cdd769a87c2d1ab37888f9))
+* **metrics:** fix metrics not being set (properly) ([fac5bcd](https://github.com/soerenschneider/occult/commit/fac5bcd4b5322846382b7fa91472665b69ea5b54))
+* **metrics:** write metrics to tmp file and atomically move it ([73e913a](https://github.com/soerenschneider/occult/commit/73e913a5c6b7cd98630d84ec17d3d154e5e6d75d))
+* **vault:** only revoke token for auth methods that issue one on login ([54ef8ed](https://github.com/soerenschneider/occult/commit/54ef8ed6e2ad2ae1c55eded2ba43c46d5a7d8ad3))
+* **vault:** trim spaces for token read from disk ([d628ed1](https://github.com/soerenschneider/occult/commit/d628ed1c603daf482c25caad43608788eaebfde6))
+* **vault:** wrap errors for better user facing error messages ([f046361](https://github.com/soerenschneider/occult/commit/f046361aa18f14108f80b0cfe6cad9ad49bbe7e2))
+
 ## [2.1.0](https://github.com/soerenschneider/occult/compare/v2.0.1...v2.1.0) (2024-10-28)
 
 
