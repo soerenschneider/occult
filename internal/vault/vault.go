@@ -67,7 +67,7 @@ func (v *Client) revokeTokenIfNeeded(ctx context.Context) {
 func (v *Client) ReadKv2(ctx context.Context, mount, path string) (map[string]any, error) {
 	_, err := v.client.Auth().Login(ctx, v.auth)
 	if err != nil {
-		return nil, ErrAuthFailed
+		return nil, fmt.Errorf("%w: %w", ErrAuthFailed, err)
 	}
 	defer v.revokeTokenIfNeeded(ctx)
 
@@ -88,7 +88,7 @@ func (v *Client) ReadTransitSecret(ctx context.Context, mount, key, ciphertext s
 
 	_, err := v.client.Auth().Login(ctx, v.auth)
 	if err != nil {
-		return "", ErrAuthFailed
+		return "", fmt.Errorf("%w: %w", ErrAuthFailed, err)
 	}
 	defer v.revokeTokenIfNeeded(ctx)
 
