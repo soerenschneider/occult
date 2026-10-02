@@ -8,7 +8,6 @@ require (
 	github.com/go-playground/validator/v10 v10.30.5
 	github.com/hashicorp/vault/api v1.23.0
 	github.com/hashicorp/vault/api/auth/approle v0.12.0
-	github.com/rs/zerolog v1.35.1
 	go.uber.org/multierr v1.11.0
 	golang.org/x/term v0.46.0
 	gopkg.in/yaml.v3 v3.0.1

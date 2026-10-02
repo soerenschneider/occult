@@ -4,14 +4,14 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"log/slog"
 	"os"
 	"os/signal"
 	"strings"
 	"sync"
 	"syscall"
+	"time"
 
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 	"github.com/soerenschneider/occult/v2/internal"
 	"github.com/soerenschneider/occult/v2/internal/config"
 	"github.com/soerenschneider/occult/v2/internal/metrics"
@@ -39,21 +39,16 @@ func main() {
 
 	initLogging()
 
-	log.Info().Msgf("Starting occult %s, commit %s", internal.BuildVersion, internal.CommitHash)
+	slog.Info("Starting occult", "version", internal.BuildVersion, "commit", internal.CommitHash)
 	configFilePath, err := getPreferredConfigFile()
-	if err != nil {
-		log.Fatal().Err(err).Msg("no config file provided")
-	}
+	dieOnError(err, "no config file provided")
 
-	log.Info().Msgf("Using config file %q", configFilePath)
+	slog.Info("Using config file", "path", configFilePath)
 	conf, err := config.Read(configFilePath)
-	if err != nil {
-		log.Fatal().Err(err).Msg("could not read config")
-	}
+	dieOnError(err, "could not read config")
 
-	if err := config.Validate(conf); err != nil {
-		log.Fatal().Err(err).Msg("invalid config")
-	}
+	err = config.Validate(conf)
+	dieOnError(err, "invalid config")
 
 	deps := buildDeps(*conf)
 
@@ -85,9 +80,9 @@ func run(deps *dependencies, conf config.OccultConfig) error {
 	var err error
 	select {
 	case <-sig:
-		log.Info().Msg("Received signal, shutting down")
+		slog.Info("Received signal, shutting down")
 	case <-done:
-		log.Info().Msg("Finished unlocking")
+		slog.Info("Finished unlocking")
 	case e := <-errChan:
 		err = e
 	}
@@ -122,16 +117,21 @@ func getPreferredConfigFile() (string, error) {
 }
 
 func initLogging() {
+	opts := &slog.HandlerOptions{Level: slog.LevelInfo}
 	if debug {
-		zerolog.SetGlobalLevel(zerolog.DebugLevel)
-	} else {
-		zerolog.SetGlobalLevel(zerolog.InfoLevel)
+		opts.Level = slog.LevelDebug
 	}
 
+	var handler slog.Handler = slog.NewJSONHandler(os.Stderr, opts)
 	if term.IsTerminal(int(os.Stdout.Fd())) {
-		log.Logger = log.Output(zerolog.ConsoleWriter{
-			Out:        os.Stderr,
-			TimeFormat: "15:04:05",
-		})
+		opts.ReplaceAttr = func(groups []string, a slog.Attr) slog.Attr {
+			if a.Key == slog.TimeKey && len(groups) == 0 {
+				return slog.String(slog.TimeKey, a.Value.Time().Format(time.TimeOnly))
+			}
+			return a
+		}
+		handler = slog.NewTextHandler(os.Stderr, opts)
 	}
+
+	slog.SetDefault(slog.New(handler))
 }

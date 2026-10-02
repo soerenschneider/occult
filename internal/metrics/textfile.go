@@ -2,13 +2,12 @@ package metrics
 
 import (
 	"bytes"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
 	"text/template"
-
-	"github.com/rs/zerolog/log"
 )
 
 var textfileTemplate = template.Must(template.New("textfile").Funcs(template.FuncMap{
@@ -42,7 +41,7 @@ func formatValue(value float64) string {
 func WriteMetrics(dir string) error {
 	path := filepath.Join(dir, "occult.prom")
 
-	log.Info().Msgf("Dumping metrics to %s", path)
+	slog.Info("Dumping metrics", "path", path)
 	metrics, err := dumpMetrics()
 	if err != nil {
 		return err

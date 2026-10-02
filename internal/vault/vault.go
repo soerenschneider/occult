@@ -5,10 +5,10 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/url"
 
 	"github.com/hashicorp/vault/api"
-	"github.com/rs/zerolog/log"
 	"go.uber.org/multierr"
 )
 
@@ -59,7 +59,7 @@ func (v *Client) revokeTokenIfNeeded(ctx context.Context) {
 		return
 	}
 	if err := v.client.Auth().Token().RevokeSelfWithContext(ctx, ""); err != nil {
-		log.Warn().Err(err).Msg("could not revoke token")
+		slog.Warn("could not revoke token", "error", err)
 	}
 }
 

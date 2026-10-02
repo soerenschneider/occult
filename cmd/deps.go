@@ -1,13 +1,14 @@
 package main
 
 import (
+	"log/slog"
+	"os"
 	"os/user"
 	"path/filepath"
 	"strings"
 
 	"github.com/hashicorp/vault/api"
 	"github.com/hashicorp/vault/api/auth/approle"
-	"github.com/rs/zerolog/log"
 	"github.com/soerenschneider/occult/v2/internal"
 	"github.com/soerenschneider/occult/v2/internal/config"
 	"github.com/soerenschneider/occult/v2/internal/vault"
@@ -37,7 +38,8 @@ func buildDeps(conf config.OccultConfig) *dependencies {
 
 func dieOnError(err error, msg string) {
 	if err != nil {
-		log.Fatal().Err(err).Msg(msg)
+		slog.Error(msg, "error", err)
+		os.Exit(1)
 	}
 }
 

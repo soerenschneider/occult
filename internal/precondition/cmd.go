@@ -2,10 +2,10 @@ package precondition
 
 import (
 	"context"
+	"log/slog"
 	"os/exec"
 	"strings"
 
-	"github.com/rs/zerolog/log"
 	"github.com/soerenschneider/occult/v2/internal/config"
 )
 
@@ -33,7 +33,7 @@ func (p *CmdPrecondition) ShouldPerformUnlock(ctx context.Context) bool {
 	cmdWithArgs := strings.Split(p.cmd, " ")
 	cmd := exec.CommandContext(ctx, cmdWithArgs[0], cmdWithArgs[1:]...) // #nosec: G204
 	if err := cmd.Run(); err != nil {
-		log.Debug().Err(err).Msgf("Running precondition yielded error")
+		slog.Debug("Running precondition yielded error", "error", err)
 	}
 
 	return cmd.ProcessState.ExitCode() != p.wantsExitCode

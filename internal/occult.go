@@ -5,12 +5,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"os/exec"
 	"strings"
 	"sync"
 	"time"
 
-	"github.com/rs/zerolog/log"
 	"github.com/soerenschneider/occult/v2/internal/config"
 	"github.com/soerenschneider/occult/v2/internal/metrics"
 	"github.com/soerenschneider/occult/v2/internal/precondition"
@@ -77,9 +77,9 @@ func (o *Occult) performUnlockRequest(ctx context.Context, req config.UnlockConf
 			return fmt.Errorf("could not build precondition for profile %s: %w", req.Profile, err)
 		}
 
-		log.Info().Msgf("Evaluating precondition")
+		slog.Info("Evaluating precondition", "profile", req.Profile)
 		if !precondition.ShouldPerformUnlock(ctx) {
-			log.Info().Msgf("Precondition indicates no unlocking necessary for profile %s", req.Profile)
+			slog.Info("Precondition indicates no unlocking necessary", "profile", req.Profile)
 			return nil
 		}
 	}
@@ -115,7 +115,7 @@ func (o *Occult) unlock(ctx context.Context, conf config.UnlockConfig) error {
 	metrics.SetUnlocked(conf.Profile, true)
 
 	if len(conf.PostHooks) > 0 {
-		log.Info().Msgf("Running %d post-hooks", len(conf.PostHooks))
+		slog.Info("Running post hooks", "profile", conf.Profile, "count", len(conf.PostHooks))
 		return runPosthooks(ctx, conf.PostHooks, conf.PostHooksStopOnError)
 	}
 
@@ -149,7 +149,7 @@ func (o *Occult) readSecret(ctx context.Context, conf config.UnlockConfig) (stri
 
 func runUnlockCommand(ctx context.Context, c string, payload string) error {
 	cmdWithArgs := strings.Split(c, " ")
-	log.Info().Msgf("Running command %q", cmdWithArgs[0])
+	slog.Info("Running command", "command", cmdWithArgs[0])
 
 	cmd := exec.CommandContext(ctx, cmdWithArgs[0], cmdWithArgs[1:]...) // #nosec: G204
 	var stderr bytes.Buffer
@@ -168,7 +168,7 @@ func runPosthooks(ctx context.Context, cmds []string, stopOnError bool) error {
 
 	for _, c := range cmds {
 		cmdWithArgs := strings.Split(c, " ")
-		log.Info().Msgf("Running post hook command %v", cmdWithArgs)
+		slog.Info("Running post hook", "command", c)
 		cmd := exec.CommandContext(ctx, cmdWithArgs[0], cmdWithArgs[1:]...) // #nosec: G204
 		profile := safeCtxValue(ctx, "UNKNOWN")
 		if err := cmd.Run(); err != nil {

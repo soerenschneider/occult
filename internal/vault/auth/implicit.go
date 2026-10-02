@@ -4,12 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"os"
 	"path"
 	"strings"
 
 	"github.com/hashicorp/vault/api"
-	"github.com/rs/zerolog/log"
 )
 
 const (
@@ -27,7 +27,7 @@ func NewTokenImplicitAuth() *TokenImplicitAuth {
 func (t *TokenImplicitAuth) Login(_ context.Context, _ *api.Client) (*api.Secret, error) {
 	token := os.Getenv(tokenEnvVar)
 	if len(token) > 0 {
-		log.Info().Msgf("Using vault token from env var %s", tokenEnvVar)
+		slog.Info("Using vault token from env var", "env_var", tokenEnvVar)
 		ret := &api.Secret{Auth: &api.SecretAuth{ClientToken: token}}
 		return ret, nil
 	}
@@ -47,7 +47,7 @@ func (t *TokenImplicitAuth) Login(_ context.Context, _ *api.Client) (*api.Secret
 		return nil, fmt.Errorf("error reading file '%s': %v", tokenPath, err)
 	}
 
-	log.Info().Msgf("Using vault token from file '%s'", tokenPath)
+	slog.Info("Using vault token from file", "path", tokenPath)
 	ret := &api.Secret{Auth: &api.SecretAuth{ClientToken: strings.TrimSpace(string(read))}}
 	return ret, nil
 }
