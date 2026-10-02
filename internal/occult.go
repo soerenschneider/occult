@@ -56,8 +56,12 @@ func (o *Occult) Run(ctx context.Context, conf config.OccultConfig, wg *sync.Wai
 			ctx, cancel := context.WithTimeout(context.WithValue(ctx, keyProfile, req.Profile), time.Minute*1)
 			defer cancel()
 
+			metrics.LastInvocationSeconds.WithLabelValues(req.Profile).SetToCurrentTime()
 			if err := o.performUnlockRequest(ctx, req); err != nil {
+				metrics.Success.WithLabelValues(req.Profile).Set(0)
 				errs = multierr.Append(errs, err)
+			} else {
+				metrics.Success.WithLabelValues(req.Profile).Set(1)
 			}
 		}()
 	}
@@ -172,8 +176,9 @@ func runPosthooks(ctx context.Context, cmds []string, stopOnError bool) error {
 			if stopOnError {
 				return errs
 			}
+		} else {
+			metrics.PostHookSuccess.WithLabelValues(profile, cmdWithArgs[0]).Set(1)
 		}
-		metrics.PostHookSuccess.WithLabelValues(profile, cmdWithArgs[0]).Set(1)
 	}
 
 	return errs
