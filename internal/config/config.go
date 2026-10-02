@@ -33,8 +33,9 @@ type OccultConfig struct {
 	UnlockRequests []UnlockConfig `yaml:"secrets" validate:"dive,required"`
 	VaultAuth      VaultConfig    `yaml:"vault_auth" validate:"required"`
 
-	// MetricsPath points to an optional Prometheus node_exporter textfile directory where metrics are stored.
-	MetricsPath string `yaml:"metrics_path" validate:"omitempty,dirpath"`
+	// MetricsPath points to an optional Prometheus node_exporter textfile directory where metrics are stored. The
+	// directory must exist.
+	MetricsPath string `yaml:"metrics_path" validate:"omitempty,dir"`
 }
 
 // UnlockConfig describes how a thing is unlocked.
