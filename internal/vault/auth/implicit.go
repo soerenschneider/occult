@@ -1,6 +1,7 @@
 package vault
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -8,7 +9,6 @@ import (
 
 	"github.com/hashicorp/vault/api"
 	"github.com/rs/zerolog/log"
-	"golang.org/x/net/context"
 )
 
 const (
