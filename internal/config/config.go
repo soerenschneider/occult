@@ -12,7 +12,6 @@ const (
 
 	VaultAuthImplicit = "implicit"
 	VaultAuthApprole  = "approle"
-	VaultAuthToken    = "token"
 
 	DefaultApproleMount = "approle"
 	DefaultTransitMount = "transit"
@@ -103,9 +102,6 @@ type VaultConfig struct {
 
 	// Type describes what type of authentication against Vault is used.
 	Type string `yaml:"auth_type" validate:"omitempty,oneof=approle implicit"`
-
-	// TokenFile describes the file that contains the Vault token.
-	TokenFile string `yaml:"token_file" validate:"required_if=Type token Token '',omitempty,file"`
 
 	// ApproleRoleId describes the Vault Approle role_id used for login via Approle authentication.
 	ApproleRoleId string `yaml:"approle_role_id" validate:"required_if=Type approle"`
