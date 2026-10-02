@@ -56,12 +56,12 @@ func (o *Occult) Run(ctx context.Context, conf config.OccultConfig, wg *sync.Wai
 			ctx, cancel := context.WithTimeout(context.WithValue(ctx, keyProfile, req.Profile), time.Minute*1)
 			defer cancel()
 
-			metrics.LastInvocationSeconds.WithLabelValues(req.Profile).SetToCurrentTime()
+			metrics.SetLastInvocation(req.Profile, time.Now())
 			if err := o.performUnlockRequest(ctx, req); err != nil {
-				metrics.Success.WithLabelValues(req.Profile).Set(0)
+				metrics.SetSuccess(req.Profile, false)
 				errs = multierr.Append(errs, err)
 			} else {
-				metrics.Success.WithLabelValues(req.Profile).Set(1)
+				metrics.SetSuccess(req.Profile, true)
 			}
 		}()
 	}
@@ -170,14 +170,14 @@ func runPosthooks(ctx context.Context, cmds []string, stopOnError bool) error {
 		cmd := exec.CommandContext(ctx, cmdWithArgs[0], cmdWithArgs[1:]...) // #nosec: G204
 		profile := safeCtxValue(ctx, "UNKNOWN")
 		if err := cmd.Run(); err != nil {
-			metrics.PostHookSuccess.WithLabelValues(profile, cmdWithArgs[0]).Set(0)
+			metrics.SetPostHookSuccess(profile, cmdWithArgs[0], false)
 			errs = multierr.Append(errs, err)
 
 			if stopOnError {
 				return errs
 			}
 		} else {
-			metrics.PostHookSuccess.WithLabelValues(profile, cmdWithArgs[0]).Set(1)
+			metrics.SetPostHookSuccess(profile, cmdWithArgs[0], true)
 		}
 	}
 
