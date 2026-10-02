@@ -57,6 +57,7 @@ func (o *Occult) Run(ctx context.Context, conf config.OccultConfig, wg *sync.Wai
 			defer cancel()
 
 			metrics.SetLastInvocation(req.Profile, time.Now())
+			metrics.SetUnlocked(req.Profile, false)
 			if err := o.performUnlockRequest(ctx, req); err != nil {
 				metrics.SetSuccess(req.Profile, false)
 				errs = multierr.Append(errs, err)
@@ -111,6 +112,7 @@ func (o *Occult) unlock(ctx context.Context, conf config.UnlockConfig) error {
 	if err := runUnlockCommand(ctx, conf.Command, payload); err != nil {
 		return err
 	}
+	metrics.SetUnlocked(conf.Profile, true)
 
 	if len(conf.PostHooks) > 0 {
 		log.Info().Msgf("Running %d post-hooks", len(conf.PostHooks))
@@ -166,18 +168,18 @@ func runPosthooks(ctx context.Context, cmds []string, stopOnError bool) error {
 
 	for _, c := range cmds {
 		cmdWithArgs := strings.Split(c, " ")
-		log.Info().Msgf("Running post pook command %v", cmdWithArgs)
+		log.Info().Msgf("Running post hook command %v", cmdWithArgs)
 		cmd := exec.CommandContext(ctx, cmdWithArgs[0], cmdWithArgs[1:]...) // #nosec: G204
 		profile := safeCtxValue(ctx, "UNKNOWN")
 		if err := cmd.Run(); err != nil {
-			metrics.SetPostHookSuccess(profile, cmdWithArgs[0], false)
+			metrics.SetPostHookSuccess(profile, c, false)
 			errs = multierr.Append(errs, err)
 
 			if stopOnError {
 				return errs
 			}
 		} else {
-			metrics.SetPostHookSuccess(profile, cmdWithArgs[0], true)
+			metrics.SetPostHookSuccess(profile, c, true)
 		}
 	}
 

@@ -38,12 +38,17 @@ var (
 		Help: "Last time occult was run in a profile",
 	}
 
+	unlocked = &gauge{
+		Name: namespace + "_unlocked_bool",
+		Help: "Whether the unlock command was run successfully, false if skipped due to the precondition",
+	}
+
 	postHookSuccess = &gauge{
 		Name: namespace + "_post_hook_success",
 		Help: "Success of the post hooks",
 	}
 
-	gauges = []*gauge{lastInvocationSeconds, postHookSuccess, success}
+	gauges = []*gauge{lastInvocationSeconds, postHookSuccess, success, unlocked}
 )
 
 func SetSuccess(profile string, ok bool) {
@@ -52,6 +57,10 @@ func SetSuccess(profile string, ok bool) {
 
 func SetLastInvocation(profile string, t time.Time) {
 	lastInvocationSeconds.set(float64(t.UnixMilli())/1000, label{"profile", profile})
+}
+
+func SetUnlocked(profile string, ok bool) {
+	unlocked.set(boolToFloat(ok), label{"profile", profile})
 }
 
 func SetPostHookSuccess(profile, hook string, ok bool) {
