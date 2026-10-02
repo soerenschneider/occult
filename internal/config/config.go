@@ -43,8 +43,7 @@ type UnlockConfig struct {
 	// Profile denotes a nice name for this unlocker
 	Profile string `yaml:"profile" validate:"required"`
 
-	// SecretPath describes the relative path in Vault to retrieve the secret. For secret type transit, it is used as
-	// the key name if TransitKey is not set.
+	// SecretPath describes the relative path in Vault to retrieve the secret. Only used for secret type kv2.
 	SecretPath string `yaml:"secret_path" validate:"required_if=SecretType kv2"`
 
 	// SecretType can either be kv2 or transit and instructs whether to decrypt it using the transit secret engine or
@@ -64,7 +63,7 @@ type UnlockConfig struct {
 	TransitMount string `yaml:"transit_mount" validate:"required_if=SecretType transit"`
 
 	// TransitKey is the name of the transit key used to decrypt the ciphertext.
-	TransitKey string `yaml:"transit_key" validate:"required_if=SecretType"`
+	TransitKey string `yaml:"transit_key" validate:"required_if=SecretType transit"`
 
 	// Command instructs occult how to actually unlock something.
 	Command string `yaml:"command" validate:"required"`
