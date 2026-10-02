@@ -56,7 +56,7 @@ type UnlockConfig struct {
 	Accessor string `yaml:"accessor_path" validate:"required_if=SecretType kv2"`
 
 	// CipherTextData contains the encrypted data that can be decrypted using the transit secret engine.
-	CipherTextData string `yaml:"cipher_text" validate:"required_if=SecretType transit"`
+	CipherTextData string `yaml:"cipher_text" validate:"required_if=SecretType transit,omitempty,startswith=vault:v"`
 
 	// TransitMount is the mount path of the transit secret engine.
 	TransitMount string `yaml:"transit_mount" validate:"required_if=SecretType transit"`
