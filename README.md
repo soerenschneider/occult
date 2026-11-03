@@ -28,6 +28,26 @@ $ cd occult
 $ make build
 ```
 
+Builds are reproducible: building the same tag with `make release` yields byte-identical binaries.
+
+### Verifying release binaries
+
+Each release ships a `checksum.sha256` file, signed with [cosign](https://github.com/sigstore/cosign) (keyless, via GitHub OIDC) by the release workflow. A [signify](https://man.openbsd.org/signify) signature (`checksum.sha256.sig`) is added to the release afterwards.
+
+```shell
+# cosign
+$ cosign verify-blob checksum.sha256 \
+    --bundle checksum.sha256.cosign.bundle \
+    --certificate-identity "https://github.com/soerenschneider/occult/.github/workflows/release.yaml@refs/heads/main" \
+    --certificate-oidc-issuer "https://token.actions.githubusercontent.com"
+
+# signify
+$ signify -V -p occult.pub -m checksum.sha256
+
+# then verify the binary itself
+$ sha256sum --ignore-missing -c checksum.sha256
+```
+
 ## Configuration
 
 Occult reads a YAML config file. If no path is given via `-config`, the first existing file of the following locations is used:

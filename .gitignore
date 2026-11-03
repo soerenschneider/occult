@@ -2,3 +2,4 @@
 /occult
 *.iml
 /.idea
+/coverage.*
